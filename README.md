@@ -40,4 +40,4 @@ For offline evaluation the checkpoint and SDM are local. No public survey panel 
 
 ## Licences
 
-Team wrapper and release helpers: **[DA CONFERMARE]**, pending the team's choice. NVIDIA checkpoint: OpenMDW-1.1, see `submission/KUMO_MODEL_LICENSE`. Vendored SDM and included third-party software retain their original notices in `submission/licenses/sdm/`. The archived `submission/LICENSE` is the MIT notice naming SituatedEvals for its starter material. No licence choice for the team follows from those notices.
+The team releases its own code in the submission wrapper and its reproduction helpers under the [MIT License](LICENSE). The NVIDIA checkpoint uses OpenMDW-1.1. Its terms are in [KUMO_MODEL_LICENSE](submission/KUMO_MODEL_LICENSE). Vendored SDM and its third-party components carry their original notices in [licenses/sdm](submission/licenses/sdm/). The [SituatedEvals MIT notice](submission/LICENSE) covers the starter material.
