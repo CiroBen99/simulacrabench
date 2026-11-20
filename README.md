@@ -1,43 +1,38 @@
 # Zero-Shot Survey Completion with a Tabular Foundation Model
 
-Fondazione Bruno Kessler · SimulacraBench Final · Codabench submission **1061774**
+Fondazione Bruno Kessler’s entry for SimulacraBench 2026, Codabench submission #1061774.
 
-The organizer imports `predict(frame, schema)` from `submission/main.py`. It runs one frozen NVIDIA Kumo Tabular Large classifier with four native views per nonconstant question on all three instruments. The submission directory holds the original wrapper, configuration, pinned Python requirements, vendored SDM snapshot and original third-party notices. The weight is fetched separately. All paths below are relative to the root of this release.
+We used the same frozen NVIDIA Kumo Tabular Large model for all three surveys. For each question, we use everyone with a complete response as a labelled example. Kumo then predicts the missing answers from each held-out respondent’s visible survey fields. We average logits from four preprocessing views before applying softmax. The entry point is [submission/main.py](submission/main.py).
 
-## Rebuild the submitted ZIP
+Our Final score was **0.49** overall, with **0.34** on UNICEF, **0.24** on World Bank and **0.88** on UNHCR. [Test leaderboard](https://www.codabench.org/competitions/17822/#/results-tab)
 
-Requires Python 3.10+ and a filesystem supporting hard links. Packaging uses the standard library and does not load the model. Place the upstream classifier at exactly `submission/kumo-large.pt`. From the release root run
+## Rebuild the submission
+
+From the repository root, download the checkpoint next to `main.py` and run the build script. It requires Python 3.10+ and a filesystem that supports hard links.
 
 ```sh
-curl --fail --location --retry 3 --output submission/kumo-large.pt https://huggingface.co/nvidia/Kumo-Tabular/resolve/3520742f7f3b937a2751266cea22d7fb6686882c/large/classifier.pt
+curl -fL --retry 3 -o submission/kumo-large.pt \
+  https://huggingface.co/nvidia/Kumo-Tabular/resolve/3520742f7f3b937a2751266cea22d7fb6686882c/large/classifier.pt
 python3 rebuild.py KUMO_LARGE_FINAL_4_VIEWS_1911_v2.zip
 ```
 
-The builder checks all 166 original member hashes and sizes, uses the original member order and metadata, verifies the complete archive, and creates the named output only if it does not already exist.
+The script checks the checkpoint and every source file, then prints the SHA-256 of the reconstructed ZIP. For our submission it was `1b5ecb16eb88a1fe9ba2674e7f2f817d159b769161dcece91437e90cccad8742`. The checkpoint digest is in [config.json](submission/config.json).
 
-| Artifact | Bytes | SHA-256 |
-| --- | ---: | --- |
-| NVIDIA checkpoint | 854850034 | `cc21484316949641cc3d65a7bb6c36cdea854cc569435755ff23b850018ec613` |
-| Final ZIP | 855852867 | `1b5ecb16eb88a1fe9ba2674e7f2f817d159b769161dcece91437e90cccad8742` |
+## Run the UNICEF example
 
-## Run the organizer's public synthetic example
-
-The organizer's phase-2 grader supplies the frame and schema to the wrapper. The following example uses the UNICEF public synthetic generator. The hosted Test score requires the organizer's private evaluation environment. For inference, use the competition's Python 3.13 environment with a CUDA-compatible PyTorch 2.8.0 installation. Run from the release root after placing the weight. The example pins the organizer's public scorer with visible-marginal normalization.
+This example runs the organizers’ grader on synthetic UNICEF responses. Start at the repository root with the checkpoint in place and Python 3.13 installed. The grader installs the model dependencies from `submission/requirements.txt`.
 
 ```sh
 python3.13 -m venv .venv
 . .venv/bin/activate
 git clone https://github.com/SituatedEvals/public.git starter
 git -C starter checkout --detach 5c69e17b191e82fe867eea6daf06c8ba8feaf622
-python -m pip install -r starter/requirements.txt -r submission/requirements.txt
-submission_dir="$PWD/submission"
 cd starter
+python -m pip install -r requirements.txt
 python make_sandbox.py --schema data/unicef.json --out _sandbox
-python score.py --phase 2 --data _sandbox --schema data/unicef.json --config config.yml --submission "$submission_dir"
+python score.py --phase 2 --data _sandbox --schema data/unicef.json --submission ../submission
 ```
 
-For offline evaluation the checkpoint and SDM are local. No public survey panel is needed at runtime. The original config stores model revision `3520742f7f3b937a2751266cea22d7fb6686882c` and upstream implementation revision `842c408fe2a8711bdf2e7cff4bfbe54266d6b940`. A Git commit for the team's uploaded wrapper has not been established. The full ZIP digest identifies the submitted implementation.
+## License
 
-## Licences
-
-The team releases its own code in the submission wrapper and its reproduction helpers under the [MIT License](LICENSE). The NVIDIA checkpoint uses OpenMDW-1.1. Its terms are in [KUMO_MODEL_LICENSE](submission/KUMO_MODEL_LICENSE). Vendored SDM and its third-party components carry their original notices in [licenses/sdm](submission/licenses/sdm/). The [SituatedEvals MIT notice](submission/LICENSE) covers the starter material.
+Our wrapper and build script use the [MIT License](LICENSE). NVIDIA distributes the checkpoint under [OpenMDW-1.1](submission/KUMO_MODEL_LICENSE). The repository also includes the [SDM notices](submission/licenses/sdm/) and the [starter kit’s MIT notice](submission/LICENSE).
