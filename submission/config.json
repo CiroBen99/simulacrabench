@@ -1,0 +1,43 @@
+{
+  "method": "kumo_only",
+  "model": "nvidia/Kumo-Tabular Large",
+  "checkpoint_sha256": "cc21484316949641cc3d65a7bb6c36cdea854cc569435755ff23b850018ec613",
+  "model_revision": "3520742f7f3b937a2751266cea22d7fb6686882c",
+  "code_revision": "842c408fe2a8711bdf2e7cff4bfbe54266d6b940",
+  "device": "auto",
+  "threads": 8,
+  "support_caps": {},
+  "default_support_cap": null,
+  "phase_total_seconds": {
+    "development": 840,
+    "final": 3500
+  },
+  "minimum_admission_seconds": 2,
+  "chunk_size": 256,
+  "instrument_contracts": {
+    "e37b6f387c6d82c831a0a643b56f754b8a6186f3de0fe41b8df35c7f8dddc7ba": "unhcr",
+    "2420c35047573c591f97de8cefb705ab860245e71049340d2aa7216d05cbe6d8": "unicef",
+    "ae02ac13e32241df2197e7bbd934d855b0912e3822ea86d706e532eac6a53ee0": "world_bank"
+  },
+  "class_limit": null,
+  "estimators": 4,
+  "seed": 0,
+  "catboost": false,
+  "routing_model": false,
+  "policy_selection": false,
+  "neural_gradient_updates": false,
+  "statistical_fallback": false,
+  "constant_target_rule": "One observed class -> pointmass; model inference undefined for oneclass, no smoothing/hybrid.",
+  "official_score": null,
+  "model_size": "large",
+  "checkpoint_file": "kumo-large.pt",
+  "donor_selection": {
+    "method": "all_visible",
+    "order": "incoming complete row order"
+  },
+  "native_views": {
+    "unhcr": 4,
+    "unicef": 4,
+    "world_bank": 4
+  }
+}
